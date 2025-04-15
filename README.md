@@ -11,11 +11,13 @@ Things to consider when updating `Tomcat/PVWS`:
 - jdk 21 from https://adoptium.net/en-GB/ installed in `C:\Program Files\Eclipse Adoptium\jdk-21.0.5.11-hotspot`
 
 ## Setting up PVWS on a machine from scratch
-1) install tomcat as a windows service, running on port `7777` using the wizard: 
 
-![image](https://github.com/user-attachments/assets/edb64e77-c54b-470f-838e-f829b8089786)
+1) install tomcat as a windows service, using the defaults set by the wizard. Note the shutdown port to `-1`, this disables it as per [the security guidelines](https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html#Server): 
+
+<img width="373" alt="image" src="https://github.com/user-attachments/assets/a6d31707-139b-41ee-9069-38c682ced46c" />
 
 During the installer expand `+Tomcat` when it asks you which components to install, and tick the option which starts tomcat on startup.
+
 
 2) copy `pvws.war` to the `webapps` directory in the tomcat directory (usually `C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps`)
 3) in your `tomcat\bin` directory, we need to add the `EPICS_CA` variables that specify the gateway address so PVWS knows where to look for PVs. this is done by running `Tomcat9.exe` with the `//US` (update server) flag ie: 
@@ -29,7 +31,7 @@ During the installer expand `+Tomcat` when it asks you which components to insta
 >
 > ![image](https://github.com/user-attachments/assets/1d040def-06fe-4e0d-b6cd-126a27797658)
 
-4) edit `server.xml` to contain these lines: 
+4) edit `server.xml` to contain these lines, removing the default connector: 
 
 ```xml
 <Connector port="443" protocol="org.apache.coyote.http11.Http11NioProtocol"
@@ -56,3 +58,8 @@ This runs under the task scheduler as making a `.bat` run as a Windows service i
 the files in `gateway/` of this repo are located in `C:\gateway` on the machine it is running on. A static gateway build is also required (ie. from the latest static build of EPICS)
 
 This points at `control-svcs` gateway, but denies everything that isn't in the gateway pvlist. It also only gives read-only access to any clients (in this case PVWS itself)
+
+
+## Useful reading
+https://tomcat.apache.org/tomcat-9.0-doc/windows-service-howto.html
+
