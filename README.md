@@ -55,7 +55,7 @@ A gateway runs on NDAEXTWEB4 which is needed to only allow PVWS to access some P
 
 This runs under the task scheduler as making a `.bat` run as a Windows service is not trivial. 
 
-the files in `gateway/` of this repo are located in `C:\gateway` on the machine it is running on. A static gateway build is also required (ie. from the latest static build of EPICS)
+the files in the top level (`gw_*` and `start_gateway.bat`) of this repo are located in `C:\gateway` on the machine it is running on. A static gateway build is also required (ie. from the latest static build of EPICS)
 
 This points at `control-svcs` gateway, but denies everything that isn't in the gateway pvlist. It also only gives read-only access to any clients (in this case PVWS itself)
 
