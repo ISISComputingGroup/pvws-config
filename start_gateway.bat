@@ -9,8 +9,6 @@ set EPICS_CAS_BEACON_ADDR_LIST=127.255.255.255
 set EPICS_CAS_INTF_ADDR_LIST=127.0.0.1
 set EPICS_CA_AUTO_ADDR_LIST=NO
 
-REM no -log as using procServ/conserver
-REM original: -pvlist %MYDIRGATE%gwext.pvlist ^
 set GWEXT_ARGS=-home c:/gateway/home ^
   -command c:/gateway/command ^
   -pvlist c:/gateway/gw_webdashboard.pvlist ^
@@ -22,7 +20,8 @@ set GWEXT_ARGS=-home c:/gateway/home ^
   -prefix TE:GW_WEBDASH:CS:GATEWAY:EXTERNAL ^
   -archive ^
   -no_cache ^
-  -debug 0
+  -debug 0 ^
+  -log C:/gateway/gateway.log
 
 
 C:\gateway\gateway.exe %GWEXT_ARGS%
