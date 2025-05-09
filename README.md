@@ -47,7 +47,20 @@ this will start a https connector using the `.pfx` file generated from the certi
 5) go to `services.msc` and hit restart on the tomcat service then navigate to `https://<machine name>:7777/pvws` - this should present the PVWS test page. 
 6) update the max message size to `131072` as per "increasing maximum message size" of https://github.com/ornl-epics/pvws?tab=readme-ov-file#running-under-tomcat - this should be done in `C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\pvws\WEB-INF\web.xml`
 7) restart the service again
-6) if you want the web dashboard to permanently use this, update https://github.com/ISISComputingGroup/WebDashboard/blob/main/.env
+8) if you want the web dashboard to permanently use this, update https://github.com/ISISComputingGroup/WebDashboard/blob/main/.env
+9) Add the following in `C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\web.xml` (or equivalent path if you've updated tomcat):
+
+```
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>restricted methods</web-resource-name>
+      <url-pattern>/*</url-pattern>       
+      <http-method>OPTIONS</http-method>
+      <http-method>DELETE</http-method>
+    </web-resource-collection>
+    <auth-constraint/>
+  </security-constraint>
+```
 
 ## Gateway
 
