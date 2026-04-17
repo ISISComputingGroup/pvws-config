@@ -64,16 +64,31 @@ this will start a https connector using the `.pfx` file generated from the certi
 
 ## Renewing the certificate
 
-1. Request a new certificate by submitting a CSR to the DI helpdesk
-1. Create a `.pfx` file by using Windows' `certificate manager -> wherever the cert is -> all tasks -> export` .  Select 'no, do not export the private key' and under "personal information exchange" select `include all certificates in the certification path if possible: true, delete the private key if export is successful: false, export all extended properties: false, enable certificate privacy: false`
+1. For access to the host, see the [systems administration wiki](https://shadow.nd.rl.ac.uk/ibex_sysadmin_manual/systems/Webserver.html).
+1. Request a new certificate
+   1. Use OpenSSL to generate a CSR (for simplicity, do this on the host using Git Bash):
+      
+      `winpty openssl req -newkey rsa:2048 -keyout PRIVATEKEY.key -out MYCSR.csr`
+   
+      The answers to the questions it asks can be found by opening the old certificate. Store the passphrase you use to encrypt the privte key somewhere safe (e.g. keeper) and the privte key in a sensible directory (e.g. `C:\certificates\yyyy-mm`)
+   1. Send the CSR to DI requesting a new certificate (use the group email account)
+   1. wait for an email back with a link to the signed certificate 
+1. Once we recieve the certificate back, generate a pfx/p12 file (for simplicity, do this on the host)
+   1. On the host, open the link sent by the certificate provider (`as Certificate (w/ chain), PEM encoded`) and use it to download the certificate to a sensible directory (e.g. `C:\certificates\yyyy-mm`)
+   1. Run OpenSSL in that directory using Git Bash to combine the certificate and private key:
 
-   > [!NOTE]  
-   > when finished you'll need to add `local service` to the users that can read this file like so: 
-   >
-   > ![image](https://github.com/user-attachments/assets/1d040def-06fe-4e0d-b6cd-126a27797658)
+      `winpty openssl pkcs12 -export -out new_cert_yy_mm.pfx -inkey key.key -passin pass:PASSWORD -in cert.cer`
 
-1. Copy the pfx to the `keystireFile` path found in `server.xml` (i.e. `C:/PROGRA~1/APACHE~1/TOMCAT~1.0/dataweb.pfx`
-1. Go to `services.msc` and restart the tomcat service
+      Where `key.key` is the private key created when you created your certificate signing request in step 2, `PASSWORD` is the passphrase used to generate that key, and `cert.cer` is the certificate you downloaded. When prompted enter the passphrase specified for the current certificate in `C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\server.xml` and also stored in keeper.
+
+      Note: `winpty` may be required for openssl to function correctly on Windows. 
+1. Add `local service` to the users that can read the file you have just generated like so:
+
+   ![image](https://github.com/user-attachments/assets/1d040def-06fe-4e0d-b6cd-126a27797658)
+
+1. Open `server.xml` (see above) to work out wher the current `keystoreFile` is. Rename this by apending `.old` or similar to make reverting this change easier
+1. rename the pfx file generated to match the name of the previous keystore file and place it in the same directory. The file extension may be `.p12` rather than `.pfx`, they are itnerchangable for this purpose.  (If doing this using windows explorer, you may want to ensure that file extensions are visible).
+1. Go to `services.msc` and restart the tomcat service (name starts `APACHE TOMCAT`).
 1. In a web browser, navigate to `https://<machine name>/pvws` - this should present the PVWS test page. User you browser to check that the new certificate is in use (should have later expiry date)
 1. Add a task to the group tasks list to renew the certificate with a due date one month before expiry
 
