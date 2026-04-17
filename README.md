@@ -70,7 +70,7 @@ this will start a https connector using the `.pfx` file generated from the certi
       
       `winpty openssl req -newkey rsa:2048 -keyout PRIVATEKEY.key -out MYCSR.csr`
    
-      The answers to the questions it asks can be found by opening the old certificate. Store the passphrase you use to encrypt the privte key somewhere safe (e.g. keeper) and the privte key in a sensible directory (e.g. `C:\certificates\yyyy-mm`)
+      The answers to the questions it asks can be found by opening the old certificate. Store the passphrase you use to encrypt the private key somewhere safe (e.g. keeper) and the privte key in a sensible directory (e.g. `C:\certificates\yyyy-mm`)
    1. Send the CSR to DI requesting a new certificate (use the group email account)
    1. wait for an email back with a link to the signed certificate 
 1. Once we recieve the certificate back, generate a pfx/p12 file (for simplicity, do this on the host)
