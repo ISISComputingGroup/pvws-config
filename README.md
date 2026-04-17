@@ -62,6 +62,21 @@ this will start a https connector using the `.pfx` file generated from the certi
   </security-constraint>
 ```
 
+## Renewing the certificate
+
+1. Request a new certificate by submitting a CSR to the DI helpdesk
+1. Create a `.pfx` file by using Windows' `certificate manager -> wherever the cert is -> all tasks -> export` .  Select 'no, do not export the private key' and under "personal information exchange" select `include all certificates in the certification path if possible: true, delete the private key if export is successful: false, export all extended properties: false, enable certificate privacy: false`
+
+   > [!NOTE]  
+   > when finished you'll need to add `local service` to the users that can read this file like so: 
+   >
+   > ![image](https://github.com/user-attachments/assets/1d040def-06fe-4e0d-b6cd-126a27797658)
+
+1. Copy the pfx to the `keystireFile` path found in `server.xml` (i.e. `C:/PROGRA~1/APACHE~1/TOMCAT~1.0/dataweb.pfx`
+1. Go to `services.msc` and restart the tomcat service
+1. In a web browser, navigate to `https://<machine name>/pvws` - this should present the PVWS test page. User you browser to check that the new certificate is in use (should have later expiry date)
+1. Add a task to the group tasks list to renew the certificate with a due date one month before expiry
+
 ## Gateway
 
 A gateway runs on NDAEXTWEB4 which is needed to only allow PVWS to access some PVs but not others. 
